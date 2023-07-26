@@ -1,21 +1,21 @@
 import React from "react";
-import LibrarySong from "./LibrarySong";
+import LibraryVideo from "./LibraryVideo";
 import styled from "styled-components";
 
-const Library = ({ songs, currentSong, setCurrentSong, audioRef, isPlaying, setSongs, libraryStatus }) => {
+const Library = ({ videos, setCurrentVideo, videoClient, isPlaying, setVideos, libraryStatus }) => {
 	return (
 		<LibraryContainer libraryStatus={libraryStatus}>
 			<H1>Library</H1>
 			<SongContainer>
-				{songs.map((song) => (
-					<LibrarySong
-						song={song}
-						songs={songs}
-						setCurrentSong={setCurrentSong}
-						key={song.id}
-						audioRef={audioRef}
+				{videos.map((video) => (
+					<LibraryVideo
+						video={video}
+						videos={videos}
+						setCurrentVideo={setCurrentVideo}
+						key={video.id}
+						videoClient={videoClient}
 						isPlaying={isPlaying}
-						setSongs={setSongs}
+						setVideos={setVideos}
 					/>
 				))}
 			</SongContainer>

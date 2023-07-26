@@ -1,17 +1,17 @@
 import React from "react";
 import styled from "styled-components";
 
-const Song = ({ currentSong }) => {
+const Video = ({ currentVideo }) => {
 	return (
-		<SongContainer>
-			<Img src={currentSong.cover} alt={currentSong.name}></Img>
-			<H1>{currentSong.name}</H1>
-			<H2>{currentSong.artist}</H2>
-		</SongContainer>
+		<VideoContainer>
+			<Img src={currentVideo.cover} alt={currentVideo.name}></Img>
+			<H1>{currentVideo.name}</H1>
+			<H2>{currentVideo.artist}</H2>
+		</VideoContainer>
 	);
 };
 
-const SongContainer = styled.div`
+const VideoContainer = styled.div`
 	margin-top: 10vh;
 	min-height: 50vh;
 	max-height: 60vh;
@@ -37,4 +37,4 @@ const H2 = styled.h3`
 	font-size: 1rem;
 `;
 
-export default Song;
+export default Video;

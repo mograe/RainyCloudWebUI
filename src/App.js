@@ -1,56 +1,67 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import "./App.css";
 
 // Import components
 import Player from "./components/Player";
-import Song from "./components/Song";
+import Video from "./components/Video";
 import Library from "./components/Library";
 import Nav from "./components/Nav";
 import Credit from "./components/Credit";
 // Import data
 import data from "./data";
 
+import VideoClient from "rainyrky-client/VideoClient";
+
+const videoClient = new VideoClient("http://localhost:3001/");
+
 const App = () => {
 	// Ref
 	const audioRef = useRef(null);
 
 	// State
-	const [songs, setSongs] = useState(data());
-	const [currentSong, setCurrentSong] = useState(songs[0]);
+	const [videos, setVideos] = useState(data());
+	const [currentVideo, setCurrentVideo] = useState(videos[0]);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [libraryStatus, setLibraryStatus] = useState(false);
-	const [songInfo, setSongInfo] = useState({
+	const [videoInfo, setVideoInfo] = useState({
 		currentTime: 0,
 		duration: 0,
 	});
 
+	//Effects
+	useEffect(() => {videoClient.setSrc(currentVideo); setIsPlaying(true)}, [currentVideo])
+	useEffect(() => {videoClient.socket.on('get-info', (videoInfo) =>{
+		setVideoInfo(videoInfo);
+	})}, [videoClient.socket]);
+	/*useEffect(() => {
+		const interval = setInterval(() => 
+		{console.log(videoClient._videoInfo)
+		}, 100);
+		return () => clearInterval(interval);
+	}, [])*/
+
 	// Functions
-	const updateTimeHandler = (e) => {
-		const currentTime = e.target.currentTime;
-		const duration = e.target.duration;
-		setSongInfo({ ...songInfo, currentTime, duration });
-	};
 
-	const songEndHandler = async () => {
-		let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
-		let nextSong = songs[(currentIndex + 1) % songs.length];
-		await setCurrentSong(nextSong);
+	const videoEndHandler = async () => {
+		let currentIndex = videos.findIndex((video) => video.id === currentVideo.id);
+		let nextVideo = videos[(currentIndex + 1) % videos.length];
+		await setCurrentVideo(nextVideo);
 
-		const newSongs = songs.map((song) => {
-			if (song.id === nextSong.id) {
+		const newVideos = videos.map((video) => {
+			if (video.id === nextVideo.id) {
 				return {
-					...song,
+					...video,
 					active: true,
 				};
 			} else {
 				return {
-					...song,
+					...video,
 					active: false,
 				};
 			}
 		});
-		setSongs(newSongs);
+		setVideos(newVideos);
 
 		if (isPlaying) {
 			audioRef.current.play();
@@ -60,34 +71,27 @@ const App = () => {
 	return (
 		<AppContainer libraryStatus={libraryStatus}>
 			<Nav libraryStatus={libraryStatus} setLibraryStatus={setLibraryStatus} />
-			<Song currentSong={currentSong} />
+			<Video currentVideo={currentVideo} />
 			<Player
 				isPlaying={isPlaying}
 				setIsPlaying={setIsPlaying}
-				currentSong={currentSong}
-				setCurrentSong={setCurrentSong}
-				audioRef={audioRef}
-				songInfo={songInfo}
-				setSongInfo={setSongInfo}
-				songs={songs}
-				setSongs={setSongs}
+				currentVideo={currentVideo}
+				setCurrentVideo={setCurrentVideo}
+				videoClient={videoClient}
+				videoInfo={videoInfo}
+				setVideoInfo={setVideoInfo}
+				videos={videos}
+				setVideos={setVideos}
 			/>
 			<Library
-				songs={songs}
-				setCurrentSong={setCurrentSong}
-				audioRef={audioRef}
+				videos={videos}
+				setCurrentVideo={setCurrentVideo}
+				videoClient={videoClient}
 				isPlaying={isPlaying}
-				setSongs={setSongs}
+				setVideos={setVideos}
 				libraryStatus={libraryStatus}
 			/>
 			<Credit />
-			<audio
-				onLoadedMetadata={updateTimeHandler}
-				onTimeUpdate={updateTimeHandler}
-				onEnded={songEndHandler}
-				ref={audioRef}
-				src={currentSong.audio}
-			/>
 		</AppContainer>
 	);
 };

@@ -1,45 +1,45 @@
 import React from "react";
 import styled from "styled-components";
 
-const LibrarySong = ({ song, setCurrentSong, audioRef, isPlaying, songs, setSongs }) => {
+const LibraryVideo = ({ video, setCurrentVideo, videoClient, isPlaying, videos, setVideos }) => {
 	// Function
-	const songSelectHandler = async () => {
-		await setCurrentSong(song);
-		const curSong = song;
-		const songList = songs;
+	const videoSelectHandler = async () => {
+		await setCurrentVideo(video);
+		const curVideo = video;
+		const videoList = videos;
 
-		const newSongs = songList.map((song) => {
-			if (song.id === curSong.id) {
+		const newVideos = videoList.map((video) => {
+			if (video.id === curVideo.id) {
 				return {
-					...song,
+					...video,
 					active: true,
 				};
 			} else {
 				return {
-					...song,
+					...video,
 					active: false,
 				};
 			}
 		});
-		setSongs(newSongs);
+		setVideos(newVideos);
 
-		// check if user is wanting to play a song.
+		// check if user is wanting to play a video.
 		if (isPlaying) {
-			audioRef.current.play();
+			videoClient.play();
 		}
 	};
 
 	return (
-		<LibrarySongContainer onClick={songSelectHandler} isActive={song.active}>
-			<Img src={song.cover} alt={song.name}></Img>
+		<SetCurrentVideo onClick={videoSelectHandler} isActive={video.active}>
+			<Img src={video.cover} alt={video.name}></Img>
 			<LibrarySongDescription>
-				<H1>{song.name}</H1>
-				<H2>{song.artist}</H2>
+				<H1>{video.name}</H1>
+				<H2>{video.artist}</H2>
 			</LibrarySongDescription>
-		</LibrarySongContainer>
+		</SetCurrentVideo>
 	);
 };
-const LibrarySongContainer = styled.div`
+const SetCurrentVideo = styled.div`
 	padding: 0 2rem 0 2rem;
 	height: 100px;
 	width: 100%;
@@ -78,4 +78,4 @@ const H2 = styled.h4`
 	font-size: 0.7rem;
 `;
 
-export default LibrarySong;
+export default LibraryVideo;

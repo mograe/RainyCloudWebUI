@@ -7,23 +7,23 @@ import styled from "styled-components";
 const pointer = { cursor: "pointer" };
 
 const Player = ({
-	currentSong,
-	setCurrentSong,
+	currentVideo,
+	setCurrentVideo,
 	isPlaying,
 	setIsPlaying,
-	audioRef,
-	songInfo,
-	setSongInfo,
-	songs,
-	setSongs,
+	videoClient,
+	videoInfo,
+	setVideoInfo,
+	videos,
+	setVideos,
 }) => {
 	// Event handlers
 	const playSongHandler = () => {
 		if (isPlaying) {
-			audioRef.current.pause();
+			videoClient.pause();
 			setIsPlaying(!isPlaying);
 		} else {
-			audioRef.current.play();
+			videoClient.play();
 			setIsPlaying(!isPlaying);
 		}
 	};
@@ -42,63 +42,57 @@ const Player = ({
 		return `${minute}:${second}`;
 	};
 
-	const dragHandler = (e) => {
+	//TODO: Перематывать видео? Хуй знает надо ли оно но навсякий случай
+	/*const dragHandler = (e) => {
 		audioRef.current.currentTime = e.target.value;
-		setSongInfo({ ...songInfo, currentTime: e.target.value });
-	};
+		setSongInfo({ ...videoInfo, currentTime: e.target.value });
+	};*/
 
 	const skipTrackHandler = async (direction) => {
-		let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
+		let currentIndex = videos.findIndex((video) => video.id === currentVideo.id);
 		if (direction === "skip-forward") {
-			await setCurrentSong(songs[(currentIndex + 1) % songs.length]);
-			activeLibraryHandler(songs[(currentIndex + 1) % songs.length]);
+			await setCurrentVideo(videos[(currentIndex + 1) % videos.length]);
+			activeLibraryHandler(videos[(currentIndex + 1) % videos.length]);
 		} else if (direction === "skip-back") {
-			if ((currentIndex - 1) % songs.length === -1) {
-				await setCurrentSong(songs[songs.length - 1]);
-				activeLibraryHandler(songs[songs.length - 1]);
+			if ((currentIndex - 1) % videos.length === -1) {
+				await setCurrentVideo(videos[videos.length - 1]);
+				activeLibraryHandler(videos[videos.length - 1]);
 			} else {
-				await setCurrentSong(songs[(currentIndex - 1) % songs.length]);
-				activeLibraryHandler(songs[(currentIndex - 1) % songs.length]);
+				await setCurrentVideo(videos[(currentIndex - 1) % videos.length]);
+				activeLibraryHandler(videos[(currentIndex - 1) % videos.length]);
 			}
 		}
 		if (isPlaying) {
-			audioRef.current.play();
+			videoClient.play();
 		}
 	};
 
-	const activeLibraryHandler = (newSong) => {
-		const newSongs = songs.map((song) => {
-			if (song.id === newSong.id) {
+	const activeLibraryHandler = (newVideo) => {
+		const newVideos = videos.map((video) => {
+			if (video.id === newVideo.id) {
 				return {
-					...song,
+					...video,
 					active: true,
 				};
 			} else {
 				return {
-					...song,
+					...video,
 					active: false,
 				};
 			}
 		});
-		setSongs(newSongs);
+		setVideos(newVideos);
 	};
 
 	return (
 		<PlayerContainer>
 			<TimeControlContainer>
-				<P>{getTime(songInfo.currentTime || 0)}</P>
-				<Track currentSong={currentSong}>
-					<Input
-						onChange={dragHandler}
-						min={0}
-						max={songInfo.duration || 0}
-						value={songInfo.currentTime}
-						type="range"
-					/>
-					<AnimateTrack songInfo={songInfo}></AnimateTrack>
+				<P>{getTime(videoInfo.currentTime || 0)}</P>
+				<Track currentVideo={currentVideo}>
+					<AnimateTrack videoInfo={videoInfo}></AnimateTrack>
 				</Track>
 
-				<P>{getTime(songInfo.duration || 0)}</P>
+				<P>{getTime(videoInfo.duration || 0)}</P>
 			</TimeControlContainer>
 
 			<PlayControlContainer>
@@ -152,7 +146,7 @@ const Track = styled.div`
 	position: relative;
 	border-radius: 1rem;
 	overflow: hidden;
-	background: linear-gradient(to right, ${(p) => p.currentSong.color[0]}, ${(p) => p.currentSong.color[1]});
+	background: linear-gradient(to right, ${(p) => p.currentVideo.color[0]}, ${(p) => p.currentVideo.color[1]});
 `;
 
 const AnimateTrack = styled.div`
@@ -162,7 +156,7 @@ const AnimateTrack = styled.div`
 	position: absolute;
 	top: 0;
 	left: 0;
-	transform: translateX(${(p) => Math.round((p.songInfo.currentTime * 100) / p.songInfo.duration) + "%"});
+	transform: translateX(${(p) => Math.round((p.videoInfo.currentTime * 100) / p.videoInfo.duration) + "%"});
 	pointer-events: none;
 `;
 
