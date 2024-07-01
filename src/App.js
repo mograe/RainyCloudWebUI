@@ -11,7 +11,7 @@ import Credit from "./components/Credit";
 // Import data
 import data from "./data";
 
-import VideoClient from "rainyrky-client/VideoClient";
+import VideoClient from "./VideoClient";
 
 const videoClient = new VideoClient("http://localhost:3001/");
 
@@ -33,7 +33,10 @@ const App = () => {
 	useEffect(() => {videoClient.setSrc(currentVideo); setIsPlaying(true)}, [currentVideo])
 	useEffect(() => {videoClient.socket.on('get-info', (videoInfo) =>{
 		setVideoInfo(videoInfo);
-	})}, [videoClient.socket]);
+	});
+		videoClient.socket.on('user-is-connected', () => {
+			videoClient.setSrc(currentVideo); setIsPlaying(true);
+		})}, [videoClient.socket]);
 	/*useEffect(() => {
 		const interval = setInterval(() => 
 		{console.log(videoClient._videoInfo)
