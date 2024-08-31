@@ -31,11 +31,9 @@ const App = () => {
 
 	//Effects
 	useEffect(() => {videoClient.setSrc(currentVideo); setIsPlaying(true)}, [currentVideo])
-	useEffect(() => {videoClient.socket.on('get-info', (videoInfo) =>{
-		setVideoInfo(videoInfo);
-	});
+	useEffect(() => {
 		videoClient.socket.on('user-is-connected', () => {
-			videoClient.setSrc(currentVideo); setIsPlaying(true);
+			videoClient.setSrc(videoClient._src, false); setIsPlaying(true);
 		})}, [videoClient.socket]);
 	/*useEffect(() => {
 		const interval = setInterval(() => 

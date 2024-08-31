@@ -5,7 +5,7 @@ function chillHop() {
 			name: "rollercoaster of hell",
 			cover:
 				"",
-			video: "file:///storage//emulated//0//Movies//rollercoaster of hell.mp4",
+			video: "file:///storage//emulated//0//Movies//hell.mp4",
 			color: ["#205950", "#2ab3bf"],
 			id: uuidv4(),
 			active: true,
@@ -14,7 +14,7 @@ function chillHop() {
 			name: "light",
 			cover:
 				"",
-			video: "file:///storage//emulated//0//Movies//output1080.mp4",
+			video: "file:///storage//emulated//0//Movies//light.mp4",
 			color: ["#EF8EA9", "#ab417f"],
 			id: uuidv4(),
 			active: false,

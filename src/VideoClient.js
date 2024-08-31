@@ -22,9 +22,12 @@ VideoClient.prototype = {
     pause : function() {
         this.socket.emit("pause")
     },
-    setSrc : function(src) {
+    setSrc : function(src, reset = true) {
+        if (reset) {
+            this.socket.emit("reset");
+        }
         this._src = src;
-        this.socket.emit("src", src)
+        this.socket.emit("src_js", src)
     },
     getSrc : function(src) {
         return this._src;
